@@ -3,27 +3,50 @@
 <head>
     <title>Goldilocks</title>
     <style>
-        body { background: #3e2723; color: #fff; font-family: 'Courier New', monospace; display: flex; }
-        #menu { width: 200px; background: #5d4037; height: 100vh; padding: 20px; }
-        #main-view { flex-grow: 1; display: flex; flex-direction: column; align-items: center; position: relative; }
-        .tower { width: 300px; border-left: 10px solid #8d6e63; border-right: 10px solid #8d6e63; background: #263238; margin-top: 20px;}
-        .floor { height: 80px; border-bottom: 4px solid #455a64; display: flex; align-items: center; justify-content: center; cursor: pointer; background: #ffcc80; color: #5d4037; }
+        /* Global Layout */
+        body { background: #3e2723; color: #fff; font-family: 'Courier New', monospace; display: flex; margin: 0; }
+        
+        /* Sidebar Menu */
+        #menu { width: 200px; background: #5d4037; height: 100vh; padding: 20px; box-sizing: border-box; }
+        
+        /* Main View Container */
+        #main-view { flex-grow: 1; display: flex; flex-direction: column; align-items: center; padding: 20px; }
+        
+        /* Tower Styles */
+        .tower { width: 300px; border-left: 10px solid #8d6e63; border-right: 10px solid #8d6e63; background: #263238; margin-top: 20px; min-height: 200px; }
+        .floor { height: 80px; border-bottom: 4px solid #455a64; display: flex; align-items: center; justify-content: center; cursor: pointer; background: #ffcc80; color: #5d4037; font-weight: bold; }
         .floor:hover { background: #ffb74d; }
-        #goal-display { background: #bf360c; padding: 10px; border-radius: 5px; margin: 20px; }
+        
+        /* UI Elements */
+        #goal-display { background: #bf360c; padding: 15px; border-radius: 5px; margin-bottom: 20px; text-align: center; width: 300px; font-weight: bold; }
+        .btn-group { display: flex; gap: 10px; margin-bottom: 20px; }
+        button { padding: 12px 20px; cursor: pointer; border: none; color: white; font-weight: bold; border-radius: 4px; }
+        #start-btn { background: #e91e63; }
+        #add-btn { background: #8bc34a; }
     </style>
 </head>
 <body>
 
 <div id="menu">
     <h2>Goldilocks</h2>
-    <p id="user-display">Welcome, Guest</p>
-    <ul><li>Dashboard</li><li>History</li><li>Settings</li></ul>
+    <p id="user-display">User: Guest</p>
+    <ul>
+        <li>Dashboard</li>
+        <li>History</li>
+        <li>Settings</li>
+    </ul>
 </div>
 
 <div id="main-view">
-    <div id="goal-display">Goal: Loading...</div>
+    <div id="goal-display">Goal: Not set</div>
     <h2>Your Floors</h2>
-    <div class="tower">
+    
+    <div class="btn-group">
+        <button id="start-btn" onclick="startSession()">Start Session</button>
+        <button id="add-btn" onclick="addFloor()">+ Add Floor</button>
+    </div>
+
+    <div class="tower" id="tower">
         {% for id, data in floors.items() %}
         <div class="floor" onclick="alert('Floor {{ id }}: {{ data.subject }}\nProgress: {{ data.progress }}%')">
             {{ data.subject }}
@@ -33,14 +56,33 @@
 </div>
 
 <script>
-    window.onload = function() {
-        // Prompt for User and Goal
+    // Logic to add a new floor
+    function addFloor() {
+        let name = prompt("Enter floor name:");
+        let progress = prompt("Enter progress percentage:");
+        if (name && progress) {
+            let tower = document.getElementById('tower');
+            let newFloor = document.createElement('div');
+            newFloor.className = 'floor';
+            newFloor.innerText = name;
+            newFloor.onclick = function() { alert('Floor: ' + name + '\nProgress: ' + progress + '%'); };
+            tower.appendChild(newFloor);
+        }
+    }
+
+    // Logic to set User and Goal
+    function startSession() {
         let username = prompt("Enter your username:");
-        if (username) document.getElementById('user-display').innerText = "User: " + username;
+        if (username) {
+            document.getElementById('user-display').innerText = "User: " + username;
+        }
         
         let goal = prompt("What is your main goal for today?");
-        if (goal) document.getElementById('goal-display').innerText = "Goal: " + goal;
-    };
+        if (goal) {
+            document.getElementById('goal-display').innerText = "Goal: " + goal;
+        }
+    }
 </script>
+
 </body>
 </html>
